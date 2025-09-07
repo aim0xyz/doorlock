@@ -10,6 +10,10 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
 
         body {
@@ -380,16 +384,148 @@
             margin-top: 20px;
         }
 
-        .custom-switch-item {
-            background: rgba(255, 255, 255, 0.8);
+        /* Popup Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 
+                0 40px 80px rgba(0,0,0,0.3),
+                0 20px 40px rgba(0,0,0,0.2),
+                inset 0 2px 0 rgba(255, 255, 255, 0.3);
+            transform: scale(0.8) translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.show .modal {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal h3 {
+            color: white;
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 24px;
+            text-align: center;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .modal-input {
+            width: 100%;
             padding: 20px;
-            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 16px;
+            font-size: 18px;
+            outline: none;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            color: #333;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 
                 0 8px 16px rgba(0,0,0,0.1),
-                0 0 0 1px rgba(255, 255, 255, 0.05);
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            margin-bottom: 24px;
+        }
+
+        .modal-input:focus {
+            border-color: rgba(102, 126, 234, 0.6);
+            box-shadow: 
+                0 12px 24px rgba(102, 126, 234, 0.25),
+                0 0 0 4px rgba(102, 126, 234, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: 16px 24px;
+            border: none;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            flex: 1;
+        }
+
+        .modal-btn.primary {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            box-shadow: 
+                0 8px 16px rgba(40, 167, 69, 0.4),
+                0 4px 8px rgba(0,0,0,0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        .modal-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 12px 24px rgba(40, 167, 69, 0.5),
+                0 6px 12px rgba(0,0,0,0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        }
+
+        .modal-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 
+                0 8px 16px rgba(0,0,0,0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-btn.secondary:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 
+                0 12px 24px rgba(0,0,0,0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        .custom-switch-item {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 
+                0 12px 24px rgba(0,0,0,0.15),
+                0 6px 12px rgba(0,0,0,0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -435,51 +571,103 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 15px;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .custom-status {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 36px;
+            padding: 24px;
+            border-radius: 20px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 
+                0 12px 24px rgba(0,0,0,0.15),
+                0 6px 12px rgba(0,0,0,0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .custom-status.unlocked {
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.25) 0%, rgba(255, 152, 0, 0.25) 100%);
+            color: #ff8f00;
+            border: 1px solid rgba(255, 193, 7, 0.4);
+            box-shadow: 
+                0 12px 24px rgba(255, 152, 0, 0.25),
+                0 6px 12px rgba(255, 152, 0, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        .custom-status.locked {
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.25) 0%, rgba(56, 142, 60, 0.25) 100%);
+            color: #2e7d32;
+            border: 1px solid rgba(76, 175, 80, 0.4);
+            box-shadow: 
+                0 12px 24px rgba(76, 175, 80, 0.25),
+                0 6px 12px rgba(76, 175, 80, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
         }
 
         .custom-switch {
             position: relative;
-            width: 100px;
-            height: 50px;
+            width: 160px;
+            height: 80px;
             background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
-            border-radius: 25px;
+            border-radius: 40px;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 
-                0 4px 12px rgba(255, 152, 0, 0.3),
-                0 2px 6px rgba(0,0,0,0.1);
+                0 16px 32px rgba(255, 152, 0, 0.5),
+                0 8px 16px rgba(0,0,0,0.2),
+                inset 0 2px 0 rgba(255, 255, 255, 0.3),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.1);
         }
 
         .custom-switch.locked {
             background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
             box-shadow: 
-                0 4px 12px rgba(76, 175, 80, 0.3),
-                0 2px 6px rgba(0,0,0,0.1);
+                0 16px 32px rgba(76, 175, 80, 0.5),
+                0 8px 16px rgba(0,0,0,0.2),
+                inset 0 2px 0 rgba(255, 255, 255, 0.3),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.1);
         }
 
         .custom-switch-handle {
             position: absolute;
-            top: 3px;
-            left: 3px;
-            width: 44px;
-            height: 44px;
-            background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
+            top: 6px;
+            left: 6px;
+            width: 68px;
+            height: 68px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
             border-radius: 50%;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 
-                0 3px 6px rgba(0,0,0,0.15),
-                0 1px 3px rgba(0,0,0,0.1);
+                0 8px 16px rgba(0,0,0,0.25),
+                0 4px 8px rgba(0,0,0,0.15),
+                inset 0 2px 0 rgba(255, 255, 255, 0.9),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.1);
         }
 
         .custom-switch.locked .custom-switch-handle {
-            transform: translateX(50px);
+            transform: translateX(80px);
         }
 
         .custom-time-display {
-            font-size: 12px;
+            margin-top: 36px;
+            padding: 24px;
+            background: rgba(248, 249, 250, 0.4);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
             color: #666;
+            font-size: 18px;
+            font-weight: 600;
             text-align: center;
+            box-shadow: 
+                0 8px 16px rgba(0,0,0,0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
         }
 
 
@@ -508,9 +696,9 @@
     <!-- Loading Screen -->
     <div class="loading-screen" id="loadingScreen">
         <div class="loading-logo">
-            <div class="loading-lock-icon"></div>
+            <div class=""></div>
         </div>
-        <div class="loading-text">Door Lock App</div>
+        <div class="loading-text">Did I lock the door?</div>
         <div class="loading-subtitle">Securing your peace of mind</div>
         <div class="loading-dots">
             <div class="loading-dot"></div>
@@ -538,14 +726,25 @@
         </div>
 
         <div class="add-switch-container">
-            <input type="text" id="switchName" placeholder="Enter door/area name" class="switch-input">
-            <button class="add-btn" onclick="addCustomSwitch()">+ Add Switch</button>
+            <button class="add-btn" onclick="showAddSwitchModal()">+ Add Switch</button>
         </div>
 
         <div class="custom-switches" id="customSwitches">
             <!-- Custom switches will be added here -->
         </div>
 
+    </div>
+
+    <!-- Add Switch Modal -->
+    <div class="modal-overlay" id="addSwitchModal">
+        <div class="modal">
+            <h3>Add New Switch</h3>
+            <input type="text" id="modalSwitchName" placeholder="Enter door/area name" class="modal-input">
+            <div class="modal-buttons">
+                <button class="modal-btn secondary" onclick="hideAddSwitchModal()">Cancel</button>
+                <button class="modal-btn primary" onclick="addCustomSwitch()">Add Switch</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -613,11 +812,11 @@
             
             if (isLocked) {
                 status.className = 'status locked';
-                status.innerHTML = 'Door is LOCKED';
+                status.innerHTML = 'Locked';
                 switchEl.classList.add('locked');
             } else {
                 status.className = 'status unlocked';
-                status.innerHTML = 'Door is UNLOCKED';
+                status.innerHTML = 'Unlocked';
                 switchEl.classList.remove('locked');
             }
             
@@ -650,8 +849,21 @@
 
 
         // Add custom switch
+        // Modal functions
+        function showAddSwitchModal() {
+            const modal = document.getElementById('addSwitchModal');
+            modal.classList.add('show');
+            document.getElementById('modalSwitchName').focus();
+        }
+
+        function hideAddSwitchModal() {
+            const modal = document.getElementById('addSwitchModal');
+            modal.classList.remove('show');
+            document.getElementById('modalSwitchName').value = '';
+        }
+
         function addCustomSwitch() {
-            const input = document.getElementById('switchName');
+            const input = document.getElementById('modalSwitchName');
             const name = input.value.trim();
             
             if (name === '') {
@@ -673,7 +885,7 @@
             };
             
             customSwitches.push(newSwitch);
-            input.value = '';
+            hideAddSwitchModal();
             saveData();
             renderCustomSwitches();
         }
@@ -714,11 +926,20 @@
                         <div class="custom-switch-name">${switchItem.name}</div>
                         <button class="delete-btn" data-switch-id="${switchItem.id}">Delete</button>
                     </div>
+                    
+                    <!-- Status display (same as main switch) -->
+                    <div class="custom-status ${switchItem.isLocked ? 'locked' : 'unlocked'}">
+                        ${switchItem.isLocked ? 'Locked' : 'Unlocked'}
+                    </div>
+                    
+                    <!-- Switch container (same layout as main switch) -->
                     <div class="custom-switch-container">
                         <div class="custom-switch ${switchItem.isLocked ? 'locked' : ''}" data-switch-id="${switchItem.id}">
                             <div class="custom-switch-handle"></div>
                         </div>
                     </div>
+                    
+                    <!-- Time display (same as main switch) -->
                     <div class="custom-time-display">
                         ${switchItem.lastActionTime ? 
                             `Last ${switchItem.isLocked ? 'locked' : 'unlocked'} ${getTimeAgo(switchItem.lastActionTime)}` : 
@@ -742,6 +963,21 @@
             if (e.target.classList.contains('custom-switch')) {
                 const switchId = parseInt(e.target.getAttribute('data-switch-id'));
                 toggleCustomSwitch(switchId);
+            }
+
+            // Handle modal overlay clicks (close modal)
+            if (e.target.classList.contains('modal-overlay')) {
+                hideAddSwitchModal();
+            }
+        });
+
+        // Handle Enter key in modal input
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && document.getElementById('addSwitchModal').classList.contains('show')) {
+                addCustomSwitch();
+            }
+            if (e.key === 'Escape' && document.getElementById('addSwitchModal').classList.contains('show')) {
+                hideAddSwitchModal();
             }
         });
 
