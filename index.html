@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Did I Lock the Door?</title>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 32px;
+            padding: 48px;
+            box-shadow: 
+                0 32px 64px rgba(0,0,0,0.15),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            text-align: center;
+            max-width: 450px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 40px;
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .status {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 16px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .status.unlocked {
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.2) 0%, rgba(255, 152, 0, 0.2) 100%);
+            color: #ff8f00;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            box-shadow: 
+                0 8px 16px rgba(255, 193, 7, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .status.locked {
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.2) 0%, rgba(56, 142, 60, 0.2) 100%);
+            color: #2e7d32;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            box-shadow: 
+                0 8px 16px rgba(76, 175, 80, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .switch-container {
+            margin: 30px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .switch {
+            position: relative;
+            width: 140px;
+            height: 70px;
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            border-radius: 35px;
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                0 12px 24px rgba(255, 152, 0, 0.4),
+                0 6px 12px rgba(0,0,0,0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .switch.locked {
+            background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+            box-shadow: 
+                0 12px 24px rgba(76, 175, 80, 0.4),
+                0 6px 12px rgba(0,0,0,0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .switch-handle {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 50%;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                0 6px 12px rgba(0,0,0,0.2),
+                0 3px 6px rgba(0,0,0,0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+
+        .switch.locked .switch-handle {
+            transform: translateX(70px);
+        }
+
+        .switch-label {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .time-display {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(248, 249, 250, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            color: #666;
+            font-size: 16px;
+            font-weight: 500;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .add-switch-container {
+            margin-top: 30px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .switch-input {
+            flex: 1;
+            padding: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            font-size: 16px;
+            outline: none;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: #333;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .switch-input:focus {
+            border-color: rgba(102, 126, 234, 0.5);
+            box-shadow: 
+                0 6px 12px rgba(102, 126, 234, 0.2),
+                0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .add-btn {
+            padding: 16px 24px;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 700;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                0 8px 16px rgba(40, 167, 69, 0.4),
+                0 4px 8px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 8px 16px rgba(40, 167, 69, 0.4),
+                0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .custom-switches {
+            margin-top: 20px;
+        }
+
+        .custom-switch-item {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 
+                0 8px 16px rgba(0,0,0,0.1),
+                0 0 0 1px rgba(255, 255, 255, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .custom-switch-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 12px 24px rgba(0,0,0,0.15),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+        }
+
+        .custom-switch-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .custom-switch-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .delete-btn {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+        }
+
+        .delete-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+        }
+
+        .custom-switch-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .custom-switch {
+            position: relative;
+            width: 100px;
+            height: 50px;
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                0 4px 12px rgba(255, 152, 0, 0.3),
+                0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .custom-switch.locked {
+            background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+            box-shadow: 
+                0 4px 12px rgba(76, 175, 80, 0.3),
+                0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .custom-switch-handle {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
+            border-radius: 50%;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                0 3px 6px rgba(0,0,0,0.15),
+                0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .custom-switch.locked .custom-switch-handle {
+            transform: translateX(50px);
+        }
+
+        .custom-time-display {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+
+
+        .floating-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .pulse-animation {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Did I Lock the Door?</h1>
+        
+        <div class="status unlocked" id="status">
+            <span class="icon"></span> 
+            Door is UNLOCKED
+        </div>
+
+        <div class="switch-container">
+            <div class="switch" id="switch" onclick="toggleDoor()">
+                <div class="switch-handle"></div>
+            </div>
+        </div>
+
+        <div class="time-display" id="timeDisplay">
+            No recent activity
+        </div>
+
+        <div class="add-switch-container">
+            <input type="text" id="switchName" placeholder="Enter door/area name" class="switch-input">
+            <button class="add-btn" onclick="addCustomSwitch()">+ Add Switch</button>
+        </div>
+
+        <div class="custom-switches" id="customSwitches">
+            <!-- Custom switches will be added here -->
+        </div>
+
+    </div>
+
+    <script>
+        // State management
+        let isLocked = false;
+        let lastActionTime = null;
+        let lockHistory = [];
+        let customSwitches = [];
+
+        // Load data from localStorage
+        function loadData() {
+            const saved = localStorage.getItem('doorLockData');
+            if (saved) {
+                const data = JSON.parse(saved);
+                isLocked = data.isLocked || false;
+                lastActionTime = data.lastActionTime;
+                lockHistory = data.lockHistory || [];
+                customSwitches = data.customSwitches || [];
+                updateUI();
+                renderCustomSwitches();
+            }
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            const data = {
+                isLocked: isLocked,
+                lastActionTime: lastActionTime,
+                lockHistory: lockHistory,
+                customSwitches: customSwitches
+            };
+            localStorage.setItem('doorLockData', JSON.stringify(data));
+        }
+
+        // Toggle door lock
+        function toggleDoor() {
+            isLocked = !isLocked;
+            lastActionTime = new Date();
+            
+            // Add to history
+            lockHistory.push({
+                timestamp: lastActionTime.toISOString(),
+                isLocked: isLocked
+            });
+            
+            // Keep only last 100 entries
+            if (lockHistory.length > 100) {
+                lockHistory = lockHistory.slice(-100);
+            }
+            
+            updateUI();
+            saveData();
+            
+            // Haptic feedback (if supported)
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+        }
+
+        // Update UI
+        function updateUI() {
+            const status = document.getElementById('status');
+            const switchEl = document.getElementById('switch');
+            const timeDisplay = document.getElementById('timeDisplay');
+            
+            if (isLocked) {
+                status.className = 'status locked';
+                status.innerHTML = 'Door is LOCKED';
+                switchEl.classList.add('locked');
+            } else {
+                status.className = 'status unlocked';
+                status.innerHTML = 'Door is UNLOCKED';
+                switchEl.classList.remove('locked');
+            }
+            
+            if (lastActionTime) {
+                const timeAgo = getTimeAgo(lastActionTime);
+                timeDisplay.textContent = `Last ${isLocked ? 'locked' : 'unlocked'} ${timeAgo}`;
+            } else {
+                timeDisplay.textContent = 'No recent activity';
+            }
+        }
+
+        // Get time ago string
+        function getTimeAgo(date) {
+            const now = new Date();
+            const diff = now - date;
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+            
+            if (minutes < 1) {
+                return 'just now';
+            } else if (minutes < 60) {
+                return `${minutes} minute${minutes === 1 ? '' : 's'} ago`;
+            } else if (hours < 24) {
+                return `${hours} hour${hours === 1 ? '' : 's'} ago`;
+            } else {
+                return `${days} day${days === 1 ? '' : 's'} ago`;
+            }
+        }
+
+
+        // Add custom switch
+        function addCustomSwitch() {
+            const input = document.getElementById('switchName');
+            const name = input.value.trim();
+            
+            if (name === '') {
+                alert('Please enter a name for the switch');
+                return;
+            }
+            
+            // Check if name already exists
+            if (customSwitches.some(switchItem => switchItem.name === name)) {
+                alert('A switch with this name already exists');
+                return;
+            }
+            
+            const newSwitch = {
+                id: Date.now(),
+                name: name,
+                isLocked: false,
+                lastActionTime: null
+            };
+            
+            customSwitches.push(newSwitch);
+            input.value = '';
+            saveData();
+            renderCustomSwitches();
+        }
+
+        // Toggle custom switch
+        function toggleCustomSwitch(switchId) {
+            const switchItem = customSwitches.find(s => s.id === switchId);
+            if (switchItem) {
+                switchItem.isLocked = !switchItem.isLocked;
+                switchItem.lastActionTime = new Date();
+                saveData();
+                renderCustomSwitches();
+                
+                // Haptic feedback
+                if (navigator.vibrate) {
+                    navigator.vibrate(50);
+                }
+            }
+        }
+
+        // Delete custom switch
+        function deleteCustomSwitch(switchId) {
+            customSwitches = customSwitches.filter(s => s.id !== switchId);
+            saveData();
+            renderCustomSwitches();
+        }
+
+        // Render custom switches
+        function renderCustomSwitches() {
+            const container = document.getElementById('customSwitches');
+            container.innerHTML = '';
+            
+            customSwitches.forEach(switchItem => {
+                const switchElement = document.createElement('div');
+                switchElement.className = 'custom-switch-item';
+                switchElement.innerHTML = `
+                    <div class="custom-switch-header">
+                        <div class="custom-switch-name">${switchItem.name}</div>
+                        <button class="delete-btn" data-switch-id="${switchItem.id}">Delete</button>
+                    </div>
+                    <div class="custom-switch-container">
+                        <div class="custom-switch ${switchItem.isLocked ? 'locked' : ''}" data-switch-id="${switchItem.id}">
+                            <div class="custom-switch-handle"></div>
+                        </div>
+                    </div>
+                    <div class="custom-time-display">
+                        ${switchItem.lastActionTime ? 
+                            `Last ${switchItem.isLocked ? 'locked' : 'unlocked'} ${getTimeAgo(switchItem.lastActionTime)}` : 
+                            'No recent activity'
+                        }
+                    </div>
+                `;
+                container.appendChild(switchElement);
+            });
+        }
+
+        // Event delegation for custom switches
+        document.addEventListener('click', function(e) {
+            // Handle delete button clicks
+            if (e.target.classList.contains('delete-btn')) {
+                const switchId = parseInt(e.target.getAttribute('data-switch-id'));
+                deleteCustomSwitch(switchId);
+            }
+            
+            // Handle switch toggle clicks
+            if (e.target.classList.contains('custom-switch')) {
+                const switchId = parseInt(e.target.getAttribute('data-switch-id'));
+                toggleCustomSwitch(switchId);
+            }
+        });
+
+        // Initialize app
+        loadData();
+    </script>
+</body>
+</html>
